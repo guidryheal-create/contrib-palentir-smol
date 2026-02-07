@@ -1,1 +1,331 @@
-# Palentir OSINT - Advanced Multi-Agent Intelligence Platform\n\n**Palentir OSINT** is a comprehensive reconnaissance platform designed for investigative journalists, security researchers, and intelligence professionals. It automates company intelligence gathering through coordinated AI agents, builds knowledge graphs using Neo4j, and provides deep insights through RAG-powered QA systems.\n\n## 🎯 Features\n\n- **Multi-Agent Workforce**: CAMEL-AI powered agents working in parallel for comprehensive reconnaissance\n- **Knowledge Graph**: Neo4j-based company relationship mapping and entity linking\n- **Long-term Memory**: Persistent context with vector embeddings (Qdrant)\n- **RAG QA System**: Fact-based question answering with retrieved context\n- **MCP Integration**: Extensible tool ecosystem via Model Context Protocol\n- **Real-time Updates**: WebSocket support for live task progress\n- **Security**: OAuth, XSS filters, rate limiting, input validation\n- **Scalability**: Docker Compose for local dev, Kubernetes-ready architecture\n\n## 📋 Prerequisites\n\n- Python 3.11+\n- Docker & Docker Compose\n- OpenAI API Key\n- UV package manager (installed automatically)\n\n## 🚀 Quick Start\n\n### 1. Clone Repository\n\n```bash\ngit clone https://github.com/palentir-osint/palentir-osint.git\ncd palentir-osint\n```\n\n### 2. Setup Environment\n\n```bash\ncp .env.example .env\n# Edit .env with your configuration\n```\n\n### 3. Start Services\n\n**Option A: Using Docker Compose (Recommended)**\n\n```bash\ndocker-compose up -d\n```\n\nServices will be available at:\n- API: http://localhost:8000\n- Frontend: http://localhost:8501\n- Neo4j: http://localhost:7474\n- PostgreSQL: localhost:5432\n- Redis: localhost:6379\n- Qdrant: http://localhost:6333\n\n**Option B: Local Development**\n\n```bash\n# Install dependencies\nuv sync\n\n# Start API\npython main.py api --reload\n\n# In another terminal, start frontend\npython main.py frontend\n```\n\n## 📚 Project Structure\n\n```\npalentir-osint/\n├── src/\n│   ├── config/              # Configuration & constants\n│   ├── models/              # Pydantic data models\n│   ├── services/            # Database & service layer\n│   ├── clients/             # External API clients\n│   ├── agents/              # AI agents\n│   ├── toolkits/            # MCP tools & utilities\n│   ├── workforce/           # Workforce orchestration\n│   ├── api/                 # FastAPI backend\n│   ├── frontend/            # Streamlit UI\n│   ├── rag/                 # RAG QA system\n│   └── utils/               # Utilities\n├── tests/                   # Test suite\n├── docs/                    # Documentation\n├── scripts/                 # Utility scripts\n├── docker-compose.yml       # Multi-service orchestration\n├── Dockerfile               # Container image\n├── pyproject.toml           # Project configuration\n└── main.py                  # CLI entry point\n```\n\n## 🤖 Agent System\n\nThe platform includes specialized agents:\n\n- **Task Orchestrator**: Decomposes reconnaissance tasks\n- **Network Analyzer**: DNS, WHOIS, IP analysis\n- **News Searcher**: Web search and media coverage\n- **Social Finder**: LinkedIn, Twitter, social media\n- **HR Intelligence**: Employee tracking and org structure\n- **Tech Detector**: Technology stack identification\n- **Graph Builder**: Neo4j knowledge graph construction\n- **Memory Agent**: Long-term context management\n- **Fact Verifier**: RAG-based information validation\n\n## 🔧 Configuration\n\n### Environment Variables\n\nKey variables in `.env`:\n\n```bash\n# LLM\nOPENAI_API_KEY=sk-...\nLLM_MODEL=gpt-4-turbo\n\n# Databases\nNEO4J_URI=bolt://localhost:7687\nPOSTGRES_HOST=localhost\nREDIS_HOST=localhost\nQDRANT_HOST=localhost\n\n# OSINT Tools\nSHODAN_API_KEY=...\nCENSYS_API_ID=...\nTWITTER_BEARER_TOKEN=...\n```\n\nSee `.env.example` for complete configuration.\n\n## 📖 API Documentation\n\nInteractive API docs available at:\n- Swagger UI: http://localhost:8000/docs\n- ReDoc: http://localhost:8000/redoc\n\n## 🧪 Testing\n\n```bash\n# Run all tests\npython main.py test\n\n# Run specific test file\npytest tests/test_agents.py -v\n\n# Run with coverage\npytest tests/ --cov=src --cov-report=html\n```\n\n## 🐳 Docker Commands\n\n```bash\n# Start all services\ndocker-compose up -d\n\n# View logs\ndocker-compose logs -f\n\n# Stop services\ndocker-compose down\n\n# Rebuild images\ndocker-compose build --no-cache\n\n# Access container shell\ndocker-compose exec api bash\n```\n\n## 📊 Database Management\n\n### Neo4j\n\n```bash\n# Access Neo4j Browser\n# http://localhost:7474\n# Default: neo4j / osint_password\n\n# Query examples\nMATCH (n) RETURN n LIMIT 10\nMATCH (c:Company)-[r]->(e) RETURN c, r, e\n```\n\n### PostgreSQL\n\n```bash\n# Connect to database\npsql -h localhost -U osint_user -d palentir_osint\n\n# Common queries\n\\dt                    # List tables\n\\d table_name         # Describe table\nSELECT * FROM tasks;  # Query tasks\n```\n\n## 🔐 Security\n\n- All API endpoints require authentication\n- OAuth 2.0 support for third-party integrations\n- Input validation with Pydantic\n- XSS protection and CSRF tokens\n- Rate limiting on API endpoints\n- Encrypted sensitive data storage\n\n## 📝 Development\n\n### Code Style\n\n```bash\n# Format code\nblack src/\nisort src/\n\n# Lint\nflake8 src/\npylint src/\n\n# Type checking\nmypy src/\n```\n\n### Adding New Agents\n\n1. Create agent class in `src/agents/`\n2. Implement required methods\n3. Register in workforce manager\n4. Add tests\n\n### Adding New Tools\n\n1. Create tool wrapper in `src/toolkits/`\n2. Implement tool interface\n3. Register in tool registry\n4. Add to agent capabilities\n\n## 🚀 Deployment\n\n### Production Deployment\n\nSee `docs/DEPLOYMENT.md` for:\n- Kubernetes manifests\n- Cloud platform guides\n- Performance tuning\n- Monitoring setup\n\n### CI/CD\n\nGitHub Actions workflows in `.github/workflows/`:\n- Unit tests\n- Integration tests\n- Code quality checks\n- Docker image build & push\n\n## 📚 Documentation\n\n- [Architecture](docs/ARCHITECTURE.md)\n- [API Reference](docs/API.md)\n- [Agent Specifications](docs/AGENTS.md)\n- [Setup Guide](docs/SETUP.md)\n- [Deployment Guide](docs/DEPLOYMENT.md)\n\n## 🤝 Contributing\n\nContributions welcome! Please:\n\n1. Fork repository\n2. Create feature branch\n3. Add tests\n4. Submit pull request\n\n## 📄 License\n\nApache License 2.0 - See LICENSE file\n\n## ⚠️ Disclaimer\n\nThis tool is intended for authorized security research and investigation only. Users are responsible for complying with all applicable laws and regulations. Unauthorized access to computer systems is illegal.\n\n## 📞 Support\n\nFor issues and questions:\n- GitHub Issues: https://github.com/palentir-osint/palentir-osint/issues\n- Documentation: https://docs.palentir-osint.local\n- Email: team@palentir-osint.local\n\n---\n\n**Built with ❤️ for investigators and security researchers**\n"
+# Palentir OSINT  
+**Advanced Multi-Agent Intelligence & OSINT Platform**
+
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![Docker](https://img.shields.io/badge/docker-ready-blue)
+![Status](https://img.shields.io/badge/status-active-success)
+
+**Palentir OSINT** is a comprehensive reconnaissance and intelligence platform designed for investigative journalists, security researchers, and intelligence professionals.  
+It automates company intelligence gathering using coordinated AI agents, constructs knowledge graphs with Neo4j, and delivers verifiable insights through a RAG-powered QA system.
+
+---
+
+## Table of Contents
+
+- [Key Features](#key-features)
+- [Architecture Overview](#architecture-overview)
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Agent System](#agent-system)
+- [Configuration](#configuration)
+- [API Documentation](#api-documentation)
+- [Testing](#testing)
+- [Docker & Services](#docker--services)
+- [Database Management](#database-management)
+- [Security](#security)
+- [Development Guide](#development-guide)
+- [Deployment](#deployment)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Disclaimer](#disclaimer)
+
+---
+
+## Key Features
+
+- **Multi-Agent Workforce** – CAMEL-AI powered agents operating in parallel  
+- **Knowledge Graph** – Neo4j-based entity and relationship mapping  
+- **Long-Term Memory** – Vector persistence using Qdrant  
+- **RAG QA System** – Evidence-based question answering  
+- **MCP Integration** – Extensible tooling via Model Context Protocol  
+- **Real-Time Updates** – WebSocket task progress streaming  
+- **Security-First** – OAuth2, rate limiting, XSS/CSRF protection  
+- **Scalable by Design** – Docker Compose for local dev, Kubernetes-ready
+
+---
+
+## Architecture Overview
+
+```
+
+User → Frontend (Streamlit)
+→ API (FastAPI)
+→ Workforce Orchestrator
+→ AI Agents (OSINT, Analysis, Verification)
+→ Tools (MCP)
+→ External OSINT APIs
+→ Neo4j (Knowledge Graph)
+→ PostgreSQL (Tasks, Metadata)
+→ Qdrant (Vector Memory)
+→ Redis (Caching & Queues)
+
+````
+
+---
+
+## Prerequisites
+
+- Python **3.11+**
+- Docker & Docker Compose
+- OpenAI API key
+- **uv** package manager (auto-installed)
+
+---
+
+## Quick Start
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/palentir-osint/palentir-osint.git
+cd palentir-osint
+````
+
+### 2. Configure Environment
+
+```bash
+cp .env.example .env
+# Edit .env with your API keys and settings
+```
+
+### 3. Start the Platform
+
+#### Option A – Docker Compose (Recommended)
+
+```bash
+docker-compose up -d
+```
+
+**Services**
+
+| Service  | URL                                            |
+| -------- | ---------------------------------------------- |
+| API      | [http://localhost:8000](http://localhost:8000) |
+| Frontend | [http://localhost:8501](http://localhost:8501) |
+| Neo4j    | [http://localhost:7474](http://localhost:7474) |
+| Qdrant   | [http://localhost:6333](http://localhost:6333) |
+
+#### Option B – Local Development
+
+```bash
+uv sync
+
+python main.py api --reload
+python main.py frontend
+```
+
+---
+
+## Project Structure
+
+```
+palentir-osint/
+├── src/
+│   ├── agents/        # AI agents
+│   ├── workforce/    # Task orchestration
+│   ├── rag/           # Retrieval-Augmented QA
+│   ├── api/           # FastAPI backend
+│   ├── frontend/      # Streamlit UI
+│   ├── toolkits/      # MCP tools
+│   ├── services/      # DB & infrastructure
+│   ├── models/        # Pydantic models
+│   ├── config/        # Configuration
+│   └── utils/         # Shared utilities
+├── tests/
+├── docs/
+├── scripts/
+├── docker-compose.yml
+├── Dockerfile
+├── pyproject.toml
+└── main.py            # CLI entry point
+```
+
+---
+
+## Agent System
+
+Specialized agents include:
+
+* Task Orchestrator
+* Network Analyzer (DNS, WHOIS, IPs)
+* News & Media Searcher
+* Social Intelligence Agent
+* HR & Organization Mapper
+* Technology Stack Detector
+* Knowledge Graph Builder
+* Memory Agent (Vector Store)
+* Fact Verifier (RAG-based)
+
+Agents collaborate through a shared task graph and persistent memory layer.
+
+---
+
+## Configuration
+
+### Core Environment Variables
+
+```bash
+# LLM
+OPENAI_API_KEY=sk-...
+LLM_MODEL=gpt-4-turbo
+
+# Databases
+NEO4J_URI=bolt://localhost:7687
+POSTGRES_HOST=localhost
+REDIS_HOST=localhost
+QDRANT_HOST=localhost
+
+# OSINT APIs
+SHODAN_API_KEY=...
+CENSYS_API_ID=...
+TWITTER_BEARER_TOKEN=...
+```
+
+See `.env.example` for the full list.
+
+---
+
+## API Documentation
+
+* Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+* ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+---
+
+## Testing
+
+```bash
+python main.py test
+pytest tests/test_agents.py -v
+pytest tests/ --cov=src --cov-report=html
+```
+
+---
+
+## Docker & Services
+
+```bash
+docker-compose up -d
+docker-compose logs -f
+docker-compose down
+docker-compose build --no-cache
+docker-compose exec api bash
+```
+
+---
+
+## Database Management
+
+### Neo4j
+
+```cypher
+MATCH (n) RETURN n LIMIT 10;
+MATCH (c:Company)-[r]->(e) RETURN c, r, e;
+```
+
+Default credentials: `neo4j / osint_password`
+
+### PostgreSQL
+
+```bash
+psql -h localhost -U osint_user -d palentir_osint
+```
+
+---
+
+## Security
+
+* OAuth 2.0 authentication
+* Role-based access control
+* Input validation (Pydantic)
+* Rate limiting & abuse protection
+* Encrypted secrets and tokens
+
+---
+
+## Development Guide
+
+### Code Quality
+
+```bash
+black src/
+isort src/
+flake8 src/
+pylint src/
+mypy src/
+```
+
+### Extending the Platform
+
+**Add an Agent**
+
+1. Implement agent in `src/agents/`
+2. Register in workforce manager
+3. Define capabilities
+4. Add tests
+
+**Add a Tool**
+
+1. Create wrapper in `src/toolkits/`
+2. Implement MCP interface
+3. Register tool
+4. Assign to agents
+
+---
+
+## Deployment
+
+Production deployment guides are available in `docs/DEPLOYMENT.md`, including:
+
+* Kubernetes manifests
+* Cloud provider setups
+* Monitoring & logging
+* Performance tuning
+
+CI/CD pipelines are provided via GitHub Actions.
+
+---
+
+## Documentation
+
+* Architecture – `docs/ARCHITECTURE.md`
+* API Reference – `docs/API.md`
+* Agents – `docs/AGENTS.md`
+* Setup – `docs/SETUP.md`
+* Deployment – `docs/DEPLOYMENT.md`
+
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests
+4. Submit a pull request
+
+All contributions are welcome.
+
+---
+
+## License
+
+Apache License 2.0
+See `LICENSE` for details.
+
+---
+
+## Disclaimer
+
+This tool is intended **only for authorized security research and lawful investigations**.
+Users are responsible for complying with all applicable laws and regulations.
+
+---
+
+**Built with ❤️ for investigators, analysts, and security researchers**
+
+```
+This is already solid enough to look “serious-project-energy” on GitHub.
+```
